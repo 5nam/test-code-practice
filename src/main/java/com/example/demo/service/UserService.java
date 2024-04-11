@@ -23,7 +23,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final JavaMailSender mailSender;
 
-    public Optional<UserEntity> getById(long id) {
+    // Optional 을 반환한다는 의미인 find 로 변환
+    public Optional<UserEntity> findById(long id) {
         return userRepository.findByIdAndStatus(id, UserStatus.ACTIVE);
     }
 
@@ -32,13 +33,14 @@ public class UserService {
             .orElseThrow(() -> new ResourceNotFoundException("Users", email));
     }
 
-    public UserEntity getByIdOrElseThrow(long id) {
+    // JPA 의 Optional 결과를 엔티티로 바꾸고, 없으면 에러를 던지도록 함
+    public UserEntity getById(long id) {
         return userRepository.findByIdAndStatus(id, UserStatus.ACTIVE)
             .orElseThrow(() -> new ResourceNotFoundException("Users", id));
     }
 
     @Transactional
-    public UserEntity createUser(UserCreateDto userCreateDto) {
+    public UserEntity create(UserCreateDto userCreateDto) {
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail(userCreateDto.getEmail());
         userEntity.setNickname(userCreateDto.getNickname());
@@ -52,8 +54,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity updateUser(long id, UserUpdateDto userUpdateDto) {
-        UserEntity userEntity = getByIdOrElseThrow(id);
+    public UserEntity update(long id, UserUpdateDto userUpdateDto) {
+        UserEntity userEntity = getById(id);
         userEntity.setNickname(userUpdateDto.getNickname());
         userEntity.setAddress(userUpdateDto.getAddress());
         userEntity = userRepository.save(userEntity);
