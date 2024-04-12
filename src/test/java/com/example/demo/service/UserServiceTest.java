@@ -1,8 +1,10 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.CertificationCodeNotMatchedException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.UserStatus;
 import com.example.demo.model.dto.UserCreateDto;
+import com.example.demo.model.dto.UserUpdateDto;
 import com.example.demo.repository.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -97,7 +99,66 @@ class UserServiceTest {
         assertThat(result.getId()).isNotNull(); // id 가 잘 생성되었는지 보는 것
         assertThat(result.getStatus()).isEqualTo(UserStatus.PENDING); // 처음 회원 가입하면, PENDING 상태인 것
         // 랜덤 값도 잘 만들어졌는지 보고 싶은데, UUID 랜덤 값을 테스트할 방법이 없음
-        // assertThat(result.getCertificationCode()).isEqualTo("T.T");
+        // assertThat(result.getCertificationCode()).isEqualTo("T.T"); // FIXME
+    }
+
+    @Test
+    void userUpdateDto_를_이용하면_유저를_수정할_수_있다() {
+
+        // given
+        UserUpdateDto userUpdateDto = UserUpdateDto.builder()
+                .address("Incheon")
+                .nickname("ohnam03")
+                .build();
+
+        BDDMockito.doNothing().when(mailSender).send(any(SimpleMailMessage.class));
+
+        // when
+        userService.update(3, userUpdateDto);
+
+        // then
+        UserEntity result = userService.getById(3);
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getAddress()).isEqualTo("Incheon");
+        assertThat(result.getNickname()).isEqualTo("ohnam03");
+    }
+
+    @Test
+    void user_를_로그인_시키면_마지막_로그인_시간이_변경된다() {
+
+        // given
+        // when
+        userService.login(3);
+
+        // then
+        UserEntity result = userService.getById(3);
+        assertThat(result.getLastLoginAt()).isGreaterThan(0L); // 원래 이 부분이 문제임. 하지만, 지금은 로그인을 실행하면 기존 값인 0이 아니라 0 이상의 값이 입력된다고 할 것!
+        // assertThat(result.getLastLoginAt()).isEqualTo("T.T"); // FIXME
+    }
+
+    // PENDING 상태의 사용자는 인증코드로 활성화시킬 수 있다
+    @Test
+    void PENDING_상태의_사용자는_인증_코드로_ACTIVE_시킬_수_있다() {
+
+        // given
+        // when
+        userService.verifyEmail(4, "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaab");
+
+        // then
+        UserEntity result = userService.getById(4);
+        assertThat(result.getStatus()).isEqualTo(UserStatus.ACTIVE);
+    }
+
+    // 인증이 실패하는 경우
+    @Test
+    void PENDING_상태의_사용자는_잘못된_인증_코드를_받으면_에러를_던진다() {
+        // given
+        // when
+        // then
+        assertThatThrownBy(() -> {
+            userService.verifyEmail(4, "wrong!");
+        }).isInstanceOf(CertificationCodeNotMatchedException.class);
+
     }
 
 }
