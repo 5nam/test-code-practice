@@ -2,6 +2,7 @@ package com.example.demo.user.service;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
+import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserUpdate;
@@ -41,7 +42,7 @@ class UserServiceTest {
         String email = "ohnam00@naver.com";
 
         // when
-        UserEntity result = userService.getByEmail(email);
+        User result = userService.getByEmail(email);
 
         // then
         assertThat(result.getNickname()).isEqualTo("ohnam");
@@ -55,7 +56,7 @@ class UserServiceTest {
         // when
         // then
         assertThatThrownBy(() -> {
-            UserEntity result = userService.getByEmail(email);
+            User result = userService.getByEmail(email);
         }).isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -63,7 +64,7 @@ class UserServiceTest {
     void getById_은_ACTIVE_상태인_유저를_찾아올_수_있다() {
         // given
         // when
-        UserEntity result = userService.getById(3);
+        User result = userService.getById(3);
 
         // then
         assertThat(result.getNickname()).isEqualTo("ohnam");
@@ -75,7 +76,7 @@ class UserServiceTest {
         // when
         // then
         assertThatThrownBy(() -> {
-            UserEntity result = userService.getById(4);
+            User result = userService.getById(4);
         }).isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -92,7 +93,7 @@ class UserServiceTest {
         BDDMockito.doNothing().when(mailSender).send(any(SimpleMailMessage.class));
 
         // when
-        UserEntity result = userService.create(userCreate);
+        User result = userService.create(userCreate);
 
         // then
         assertThat(result.getId()).isNotNull(); // id 가 잘 생성되었는지 보는 것
@@ -116,7 +117,7 @@ class UserServiceTest {
         userService.update(3, userUpdate);
 
         // then
-        UserEntity result = userService.getById(3);
+        User result = userService.getById(3);
         assertThat(result.getId()).isNotNull();
         assertThat(result.getAddress()).isEqualTo("Incheon");
         assertThat(result.getNickname()).isEqualTo("ohnam03");
@@ -130,7 +131,7 @@ class UserServiceTest {
         userService.login(3);
 
         // then
-        UserEntity result = userService.getById(3);
+        User result = userService.getById(3);
         assertThat(result.getLastLoginAt()).isGreaterThan(0L); // 원래 이 부분이 문제임. 하지만, 지금은 로그인을 실행하면 기존 값인 0이 아니라 0 이상의 값이 입력된다고 할 것!
         // assertThat(result.getLastLoginAt()).isEqualTo("T.T"); // FIXME
     }
@@ -144,7 +145,7 @@ class UserServiceTest {
         userService.verifyEmail(4, "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaab");
 
         // then
-        UserEntity result = userService.getById(4);
+        User result = userService.getById(4);
         assertThat(result.getStatus()).isEqualTo(UserStatus.ACTIVE);
     }
 
