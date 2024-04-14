@@ -12,10 +12,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest(showSql = true)
 @Sql("/sql/user-repository-test-data.sql")
-class UserRepositoryTest {
+class UserJpaRepositoryTest {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserJpaRepository userJpaRepository;
 
 //    @Test
 //    void UserRepository_가_제대로_연결되었다() { // jpa 가 h2 랑 제대로 연동되는지 확인
@@ -39,7 +39,7 @@ class UserRepositoryTest {
         // given
 
         // when
-        Optional<UserEntity> result = userRepository.findByIdAndStatus(1, UserStatus.ACTIVE);
+        Optional<UserEntity> result = userJpaRepository.findByIdAndStatus(1, UserStatus.ACTIVE);
 
         // then
         assertThat(result.isPresent()).isTrue();
@@ -50,7 +50,7 @@ class UserRepositoryTest {
         // given
 
         // when
-        Optional<UserEntity> result = userRepository.findByIdAndStatus(1, UserStatus.PENDING);
+        Optional<UserEntity> result = userJpaRepository.findByIdAndStatus(1, UserStatus.PENDING);
 
         // then
         assertThat(result.isEmpty()).isTrue();
@@ -61,7 +61,7 @@ class UserRepositoryTest {
         // given
 
         // when
-        Optional<UserEntity> result = userRepository.findByEmailAndStatus("ohnam00@naver.com", UserStatus.ACTIVE);
+        Optional<UserEntity> result = userJpaRepository.findByEmailAndStatus("ohnam00@naver.com", UserStatus.ACTIVE);
 
         // then
         assertThat(result.isPresent()).isTrue();
@@ -72,7 +72,7 @@ class UserRepositoryTest {
         // given
 
         // when
-        Optional<UserEntity> result = userRepository.findByEmailAndStatus("ohnam00@naver.com", UserStatus.PENDING);
+        Optional<UserEntity> result = userJpaRepository.findByEmailAndStatus("ohnam00@naver.com", UserStatus.PENDING);
 
         // then
         assertThat(result.isEmpty()).isTrue();
