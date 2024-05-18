@@ -36,7 +36,7 @@ class PostTest {
         assertThat(post.getWriter().getNickname()).isEqualTo("ohnam");
         assertThat(post.getWriter().getAddress()).isEqualTo("Seoul");
         assertThat(post.getWriter().getStatus()).isEqualTo(UserStatus.ACTIVE);
-        assertThat(post.getWriter().getCertificationCode()).isEqualTo("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaab");
+        assertThat(post.getWriter().getCertificationCode()).isEqualTo("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
     }
 
 }
