@@ -6,8 +6,7 @@ import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserUpdate;
-import com.example.demo.user.infrastructure.UserEntity;
-import com.example.demo.user.service.UserService;
+import com.example.demo.user.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 class UserServiceTest {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
     @MockBean // 스프링에 있는 JavaMailSender 라는 Bean 객체를 Mock 으로 선언된 객체로 덮어쓰기 하는 것 -> 테스트 실행 시 MockBean 값이 주입되어 실행
     private JavaMailSender mailSender;
 

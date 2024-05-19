@@ -12,15 +12,6 @@ import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserUpdate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -28,14 +19,14 @@ import static org.mockito.ArgumentMatchers.any;
 
 class UserServiceTest {
 
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @BeforeEach
     void init() {
         FakeMailSender fakeMailSender = new FakeMailSender();
         FakeUserRepository fakeUserRepository = new FakeUserRepository();
 
-        this.userService = UserService.builder()
+        this.userService = UserServiceImpl.builder()
                 .clockHolder(new TestClockHolder(1678530673958L))
                 .userRepository(fakeUserRepository)
                 .uuidHolder(new TestUuidHolder("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"))

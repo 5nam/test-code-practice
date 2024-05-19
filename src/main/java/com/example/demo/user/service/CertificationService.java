@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CertificationService {
+public class CertificationService implements com.example.demo.user.controller.port.CertificationService {
 
     private final MailSender mailSender;
 
@@ -16,6 +16,7 @@ public class CertificationService {
      * @param userId
      * @param certificationCode
      */
+    @Override
     public void send(String email, long userId, String certificationCode) {
         String certificationUrl = generateCertificationUrl(userId, certificationCode);
         String title = "Please certify your email address";
